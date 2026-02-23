@@ -47,6 +47,18 @@ function playerDrop() {
     }
 }
 
+function playerRotate() {
+    const oldSubPos = { ...player.subPos };
+
+    const nx = -player.subPos.y;
+    const ny = player.subPos.x;
+    player.subPos.x = nx;
+    player.subPos.y = ny;
+    if(collide(board, player)){
+        player.subPos = oldSubPos;
+    }
+}
+
 function draw() {
     context.fillStyle = "black";
     context.fillRect(0, 0, canvas.width, canvas.height);
@@ -84,6 +96,8 @@ window.addEventListener("keydown", (event) => {
     } else if(event.key === "ArrowLeft") {
         player.pos.x--;
         if(collide(board, player)) player.pos.x++;
+    } else if(event.key === " "){
+        playerRotate();
     }
 });
 

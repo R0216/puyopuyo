@@ -19,7 +19,7 @@ function collide(board, player) {
     ];
 
     for (const p of puyos) {
-        if (p.x > 0 || p.x >= 6 || p.y >= 12 || (p.y >= 0 && board[p.y[p.x] !== 0])){
+        if (p.x < 0 || p.x >= 6 || p.y >= 12 || (p.y >= 0 && board[p.y][p.x] !== 0)){
             return true
         }
     }
@@ -27,8 +27,8 @@ function collide(board, player) {
 }
 
 function merge(board, player) {
-    board[player.pos.y][player.poa.x] = player.color;
-    baord[player.pos.y + player.subPos.y][player.pos.x + player.subPos.x] = player.subColor;
+    board[player.pos.y][player.pos.x] = player.color;
+    board[player.pos.y + player.subPos.y][player.pos.x + player.subPos.x] = player.subColor;
 }
 
 function playerReset() {
@@ -36,6 +36,15 @@ function playerReset() {
     player.pos.x = 2;
     player.color = Math.floor(Math.random() * 5) + 1;
     player.subColor = Math.floor(Math.random() * 5) + 1;
+}
+
+function playerDrop() {
+    player.pos.y++;
+    if(collide(board, player)){
+        player.pos.y--;
+        merge(board, player);
+        playerReset();
+    }
 }
 
 function draw() {
@@ -67,18 +76,18 @@ function drawPuyo(x, y, colorIndex) {
 
 window.addEventListener("keydown", (event) => {
     if(event.key === "ArrowDown") {
-        if(player.pos.y < 11) {
-            player.pos.y++;
-        } else {
-            console.log("着地")
-        }
-        
+        playerDrop();
         console.log(player.pos.y);
     } else if(event.key === "ArrowRight") {
         player.pos.x++;
+        if(collide(board, player)) player.pos.x--;
     } else if(event.key === "ArrowLeft") {
         player.pos.x--;
+        if(collide(board, player)) player.pos.x++;
     }
-})
+});
 
+setInterval(() =>{
+    playerDrop();
+}, 1000);
 draw();

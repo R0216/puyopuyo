@@ -43,6 +43,7 @@ function playerDrop() {
     if(collide(board, player)){
         player.pos.y--;
         merge(board, player);
+        dropPuyos();
         playerReset();
     }
 }
@@ -56,6 +57,24 @@ function playerRotate() {
     player.subPos.y = ny;
     if(collide(board, player)){
         player.subPos = oldSubPos;
+    }
+}
+
+function dropPuyos() {
+    let dropped = false;
+
+    for (let y = 10; y >= 0; y--) {
+        for (let x = 0; x < 6; x++) {
+            const color = board[y][x];
+            if (color > 0 && board[y + 1][x] === 0) {
+                board[y + 1][x] = color;
+                board[y][x] = 0;
+                dropped = true;
+            }
+        }
+    }
+    if(dropped) {
+        dropPuyos();
     }
 }
 

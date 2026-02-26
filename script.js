@@ -78,6 +78,21 @@ function dropPuyos() {
     }
 }
 
+function getConnectedPuyos(x, y, color, connected = []){
+    if(x < 0 || x >= 6 || y < 0 || y >= 12 || board[y][x] !== color || connected.some(p=> p.x === x && p.y === y)){
+        return connected;
+    }
+
+    connected.push({ x, y });
+
+    getConnectedPuyos(x + 1, y, color, connected);
+    getConnectedPuyos(x - 1, y, color, connected);
+    getConnectedPuyos(x, y + 1, color, connected);
+    getConnectedPuyos(x, y - 1, color, connected);
+
+    return connected;
+}
+
 function draw() {
     context.fillStyle = "black";
     context.fillRect(0, 0, canvas.width, canvas.height);

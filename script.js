@@ -36,6 +36,11 @@ function playerReset() {
     player.pos.x = 2;
     player.color = Math.floor(Math.random() * 5) + 1;
     player.subColor = Math.floor(Math.random() * 5) + 1;
+
+    if (collide(board, player)) {
+        alert("GAME OVER");
+        board.forEach(row => row.fill(0));
+    }
 }
 
 function playerDrop() {

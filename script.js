@@ -44,7 +44,21 @@ function playerDrop() {
         player.pos.y--;
         merge(board, player);
         dropPuyos();
+        const wasErased = erasePuyos();
+
+        if(wasErased) {
+            dropPuyos();
+        }
         playerReset();
+    }
+}
+
+function handleChain() {
+    dropPuyos();
+    const erased = erasePuyos();
+
+    if(erased) {
+        handleChain();
     }
 }
 
@@ -91,6 +105,30 @@ function getConnectedPuyos(x, y, color, connected = []){
     getConnectedPuyos(x, y - 1, color, connected);
 
     return connected;
+}
+
+function erasePuyos(){
+    let erased = false;
+    const checked = [];
+
+    for(let y = 0; y < 12; y++) {
+        for (let x = 0; x < 6; x++) {
+            const color = board[y][x];
+
+            if (color > 0 && !checked.some(p => p.x === x && p.y === y)) {
+                const connected = getConnectedPuyos(x, y, color, []);
+
+                if(connected.length >= 4){
+                    connected.forEach(p => {
+                        board[p.y][p.x] = 0;
+                    });
+                    erased = true;
+                }
+                checked.push(...connected);
+            }
+        }
+    }
+    return erased;
 }
 
 function draw() {
